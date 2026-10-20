@@ -1,19 +1,25 @@
 ## 3.1 Utilización de datos
 Para comentarle, integré los datos hechos a la DB con el siguiente comando:
+
     npx prisma db execute --config .\prisma7.config.ts --file .\database.sql
 
 ## Diferencia entre `$queryRaw` y `$executeRaw`
 `$queryRaw` sirve para consultas que devuelven filas como un SELECT, pero devuelve un arreglo con los datos. EJ:
+
   const productos = await prisma.$queryRaw`SELECT id, nombre FROM productos WHERE stock < ${limite}`;
 
 `$executeRaw` ejecuta operaciones que no devuelven filas (INSERT, UPDATE o DELETE), devuelve un número con la cantidad de filas afectadas. EJ:
+
       const actualizados = await prisma.$executeRaw`UPDATE productos SET activo = ${false} WHERE stock = ${0}`;
 
 ## 3.2 Parámetros y prevención de inyeccíon SQL
 `${id}` se considera como parámetro separado de la estructura SQL. La DB recibe la consulta y el valor por separado, en vez de interpretar como parte del código SQL.
 Si el id contiene un texto malicioso, se tratará como valor y no como una instrucción SQL. Por ejemplo, uso correcto:
+
     const filas = await prisma.$queryRaw`SELECT * FROM productos WHERE id = ${id}`;
+
 Uso incorrecto:
+
     const sql = `SELECT * FROM usuarios WHERE email = '${email}'`;
 
 # 3.3 Cuándo justificar SQL Puro
