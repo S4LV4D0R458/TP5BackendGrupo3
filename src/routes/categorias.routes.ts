@@ -4,11 +4,10 @@ import { createCategoriasValidator, obtenerIDValidator } from '../validators/cat
 
 const router = express.Router();
 
-//Las rutas validan 
-router.get('/', ctrl.listar, createCategoriasValidator, obtenerIDValidator);
-router.get('/:id', ctrl.obtener, createCategoriasValidator, obtenerIDValidator);
-router.post('/', ctrl.crear, createCategoriasValidator, obtenerIDValidator);
-router.put('/:id', ctrl.actualizar, createCategoriasValidator, obtenerIDValidator);
-router.delete('/:id', ctrl.eliminar, createCategoriasValidator, obtenerIDValidator);
+router.get('/', ctrl.listar);
+router.get('/:id', obtenerIDValidator, ctrl.obtener);
+router.post('/', createCategoriasValidator, ctrl.crear);
+router.put('/:id', createCategoriasValidator, obtenerIDValidator, ctrl.actualizar);
+router.delete('/:id', obtenerIDValidator, ctrl.eliminar);
 
 export default router;

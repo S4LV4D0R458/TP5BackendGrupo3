@@ -1,17 +1,22 @@
 import express from 'express';
 import * as ctrl from '../controllers/pedidos.controller.js';
 import detallePedidoRoutes from './detallePedido.routes.js';
-import {obtenerIDValidator, validarPedido} from "../validators/pedidos.validator.js"
+import {
+  obtenerIDValidator,
+  obtenerPedidoIDValidator,
+  validarCrearPedido,
+  validarActualizarEstadoPedido,
+} from '../validators/pedidos.validator.js';
 const router = express.Router();
 
-router.get('/reportes/clientes', ctrl.reportePorCliente, obtenerIDValidator, validarPedido);
-router.get('/reportes/empleados', ctrl.reportePorEmpleado, obtenerIDValidator, validarPedido);
-router.use('/:pedidoId/detalle', detallePedidoRoutes, obtenerIDValidator, validarPedido);
+router.get('/reportes/clientes', ctrl.reportePorCliente);
+router.get('/reportes/empleados', ctrl.reportePorEmpleado);
+router.use('/:pedidoId/detalle', obtenerPedidoIDValidator, detallePedidoRoutes);
 
-router.get('/', ctrl.listar, obtenerIDValidator, validarPedido);
-router.get('/:id', ctrl.obtener, obtenerIDValidator, validarPedido);
-router.post('/', ctrl.crear, obtenerIDValidator, validarPedido);
-router.patch('/:id/estado', ctrl.actualizarEstado, obtenerIDValidator, validarPedido);
-router.delete('/:id', ctrl.eliminar, obtenerIDValidator, validarPedido);
+router.get('/', ctrl.listar);
+router.get('/:id', obtenerIDValidator, ctrl.obtener);
+router.post('/', validarCrearPedido, ctrl.crear);
+router.patch('/:id/estado', obtenerIDValidator, validarActualizarEstadoPedido, ctrl.actualizarEstado);
+router.delete('/:id', obtenerIDValidator, ctrl.eliminar);
 
 export default router;

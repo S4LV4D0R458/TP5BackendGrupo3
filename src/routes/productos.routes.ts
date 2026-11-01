@@ -5,13 +5,13 @@ import { createProductoValidator, obtenerIDValidator } from '../validators/produ
 const router = express.Router();
 
 // Las rutas fijas van ANTES de /:id, si no Express las confunde con un id
-router.get('/stock-bajo', ctrl.stockBajo, createProductoValidator, obtenerIDValidator);
-router.get('/resumen/categorias', ctrl.resumenPorCategoria, createProductoValidator, obtenerIDValidator);
+router.get('/stock-bajo', ctrl.stockBajo);
+router.get('/resumen/categorias', ctrl.resumenPorCategoria);
 
-router.get('/', ctrl.listar, createProductoValidator, obtenerIDValidator);
-router.get('/:id', ctrl.obtener, createProductoValidator, obtenerIDValidator);
-router.post('/', ctrl.crear, createProductoValidator, obtenerIDValidator);
-router.put('/:id', ctrl.actualizar, createProductoValidator, obtenerIDValidator);
-router.delete('/:id', ctrl.eliminar, createProductoValidator, obtenerIDValidator);
+router.get('/', ctrl.listar);
+router.get('/:id', obtenerIDValidator, ctrl.obtener);
+router.post('/', createProductoValidator, ctrl.crear);
+router.put('/:id', obtenerIDValidator, createProductoValidator, ctrl.actualizar);
+router.delete('/:id', obtenerIDValidator, ctrl.eliminar);
 
 export default router;

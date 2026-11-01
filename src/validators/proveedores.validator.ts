@@ -31,7 +31,8 @@ export const validarProveedores = [
 
     body('activo')
         .optional()
-        .isBoolean().withMessage('El campo activo debe ser verdadero o falso')
+        .isBoolean().withMessage('El campo activo debe ser verdadero o falso'),
+    validateRequest
 ]
 
 export const obtenerIDValidator = [

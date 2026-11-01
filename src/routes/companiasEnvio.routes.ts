@@ -4,10 +4,10 @@ import { validarCompaniaEnvio, obtenerIDValidator } from '../validators/compania
 
 const router = express.Router();
 
-router.get('/', ctrl.listar, validarCompaniaEnvio, obtenerIDValidator);
-router.get('/:id', ctrl.obtener, validarCompaniaEnvio, obtenerIDValidator);
-router.post('/', ctrl.crear,validarCompaniaEnvio, obtenerIDValidator);
-router.put('/:id', ctrl.actualizar,validarCompaniaEnvio, obtenerIDValidator);
-router.delete('/:id', ctrl.eliminar,validarCompaniaEnvio, obtenerIDValidator);
+router.get('/', ctrl.listar);
+router.get('/:id', obtenerIDValidator, ctrl.obtener);
+router.post('/', validarCompaniaEnvio, ctrl.crear);
+router.put('/:id', obtenerIDValidator, validarCompaniaEnvio, ctrl.actualizar);
+router.delete('/:id', obtenerIDValidator, ctrl.eliminar);
 
 export default router;

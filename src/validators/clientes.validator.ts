@@ -32,7 +32,8 @@ export const validarCliente = [
 
     body('ciudad')
         .optional({ nullable: true })
-        .isString().withMessage('La ciudad debe ser un texto')
+        .isString().withMessage('La ciudad debe ser un texto'),
+    validateRequest
 ];
 
 export const obtenerIDValidator = [

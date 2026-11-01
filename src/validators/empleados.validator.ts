@@ -31,7 +31,32 @@ export const validarEmpleado = [
 
     body('fecha_ingreso')
         .optional({ nullable: true })
-        .isISO8601().withMessage('La fecha de ingreso debe tener un formato de fecha válido')
+        .isISO8601().withMessage('La fecha de ingreso debe tener un formato de fecha válido'),
+    validateRequest
+];
+
+export const validarEmpleadoParcial = [
+    body('nombre')
+        .optional()
+        .isString().withMessage('El nombre debe ser un texto')
+        .notEmpty().withMessage('El nombre no puede estar vacío'),
+    body('apellido')
+        .optional()
+        .isString().withMessage('El apellido debe ser un texto')
+        .notEmpty().withMessage('El apellido no puede estar vacío'),
+    body('cargo')
+        .optional({ nullable: true })
+        .isString().withMessage('El cargo debe ser un texto'),
+    body('email')
+        .optional({ nullable: true })
+        .isEmail().withMessage('El email no es válido'),
+    body('telefono')
+        .optional({ nullable: true })
+        .isMobilePhone('any').withMessage('El teléfono no es válido'),
+    body('fecha_ingreso')
+        .optional({ nullable: true })
+        .isISO8601().withMessage('La fecha de ingreso debe tener un formato válido'),
+    validateRequest
 ];
 
 export const obtenerIDValidator = [

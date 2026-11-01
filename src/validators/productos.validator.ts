@@ -7,11 +7,16 @@ export const createProductoValidator = [
     .isString().withMessage('El nombre debe ser una cadena de texto')
     .trim(),
   body('precio')
-    .isFloat({ gt: 0 }).withMessage('El precio debe ser un número mayor a 0'),
+    .isFloat({ min: 0 }).withMessage('El precio debe ser un número mayor o igual a 0'),
   body('stock')
+    .optional()
     .isInt({ min: 0 }).withMessage('El stock debe ser un entero mayor o igual a 0'),
-  body('categoriaId')
-    .isInt({ gt: 0 }).withMessage('El ID de categoría debe ser válido'),
+  body('proveedor_id')
+    .isInt({ gt: 0 }).withMessage('El ID del proveedor debe ser válido'),
+  body('categoria_id')
+    .exists().withMessage('La categoría es obligatoria')
+    .custom(value => value === null || (Number.isInteger(Number(value)) && Number(value) > 0))
+    .withMessage('El ID de categoría debe ser válido o null'),
   validateRequest
 ];
 

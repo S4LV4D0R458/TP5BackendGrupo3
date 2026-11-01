@@ -3,10 +3,10 @@ import * as ctrl from '../controllers/clientes.controller.js';
 import {validarCliente, obtenerIDValidator} from "../validators/clientes.validator.js"
 const router = express.Router();
 
-router.get('/', ctrl.listar, validarCliente, obtenerIDValidator);
-router.get('/:id', ctrl.obtener, validarCliente, obtenerIDValidator);
-router.post('/', ctrl.crear, validarCliente, obtenerIDValidator);
-router.put('/:id', ctrl.actualizar, validarCliente, obtenerIDValidator);
-router.delete('/:id', ctrl.eliminar, validarCliente, obtenerIDValidator);
+router.get('/', ctrl.listar);
+router.get('/:id', obtenerIDValidator, ctrl.obtener);
+router.post('/', validarCliente, ctrl.crear);
+router.put('/:id', obtenerIDValidator, validarCliente, ctrl.actualizar);
+router.delete('/:id', obtenerIDValidator, ctrl.eliminar);
 
 export default router;

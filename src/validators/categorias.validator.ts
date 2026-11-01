@@ -5,9 +5,12 @@ export const createCategoriasValidator = [
   body('nombre')
     .notEmpty().withMessage('El nombre es obligatorio')
     .isString().withMessage('El nombre debe ser una cadena de texto')
+    .isLength({ max: 80 }).withMessage('El nombre no debe superar los 80 caracteres')
     .trim(),
   body('descripcion')
-    .isInt({ gt: 0 }).withMessage('El ID de categoría debe ser válido'),
+    .optional({ nullable: true })
+    .isString().withMessage('La descripción debe ser una cadena de texto')
+    .isLength({ max: 200 }).withMessage('La descripción no debe superar los 200 caracteres'),
   validateRequest
 ];
 

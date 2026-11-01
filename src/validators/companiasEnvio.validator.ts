@@ -19,7 +19,8 @@ export const validarCompaniaEnvio = [
     body('email')
         .optional({ nullable: true })
         .isEmail()
-        .withMessage('El email no es válido')
+        .withMessage('El email no es válido'),
+    validateRequest
 ];
 
 export const obtenerIDValidator = [
