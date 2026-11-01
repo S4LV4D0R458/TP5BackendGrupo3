@@ -1,12 +1,14 @@
-generator client {
+ generator client {
+  // Genera el cliente tipado en el directorio consumido por la aplicación.
   provider = "prisma-client"
   output   = "../src/generated/prisma"
 }
 
 datasource db {
+  // El proveedor y la conexión MariaDB/MySQL se configuran mediante prisma7.config.ts.
   provider = "mysql"
 }
-
+// Proveedor y categoría organizan la información de productos.
 model Proveedor {
   id        Int        @id @default(autoincrement())
   nombre    String     @db.VarChar(100)
@@ -16,6 +18,9 @@ model Proveedor {
   direccion String     @db.VarChar(150)
   ciudad    String     @db.VarChar(80)
   activo    Boolean    @default(true)
+  createdAt DateTime   @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt DateTime   @default(now()) @updatedAt @map("updated_at") @db.DateTime(3)
+
   productos Producto[]
 
   @@map("proveedores")
@@ -25,11 +30,13 @@ model Categoria {
   id          Int        @id @default(autoincrement())
   nombre      String     @db.VarChar(80)
   descripcion String     @db.VarChar(200)
+  createdAt   DateTime   @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt   DateTime   @default(now()) @updatedAt @map("updated_at") @db.DateTime(3)
   productos   Producto[]
 
   @@map("categorias")
 }
-
+ // Un producto pertenece a un proveedor; la categoría es opcional.
 model Producto {
   id          Int             @id @default(autoincrement())
   nombre      String          @db.VarChar(100)
@@ -39,6 +46,8 @@ model Producto {
   categoriaId Int?            @map("categoria_id")
   proveedorId Int             @map("proveedor_id")
   activo      Boolean         @default(true)
+  createdAt   DateTime        @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt   DateTime        @default(now()) @updatedAt @map("updated_at") @db.DateTime(3)
   detalles    DetallePedido[]
   categoria   Categoria?      @relation(fields: [categoriaId], references: [id])
   proveedor   Proveedor       @relation(fields: [proveedorId], references: [id])
@@ -47,7 +56,7 @@ model Producto {
   @@index([proveedorId], map: "productos_proveedor_id_fkey")
   @@map("productos")
 }
-
+// Un cliente puede hacer muchos pedidos
 model Cliente {
   id        Int      @id @default(autoincrement())
   nombre    String   @db.VarChar(100)
@@ -57,11 +66,14 @@ model Cliente {
   email     String?  @unique @db.VarChar(100)
   direccion String?  @db.VarChar(150)
   ciudad    String?  @db.VarChar(80)
+  createdAt DateTime @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.DateTime(3)
   pedidos   Pedido[]
 
   @@map("clientes")
 }
 
+// Un empleado puede procesar varios pedidos
 model Empleado {
   id           Int       @id @default(autoincrement())
   nombre       String    @db.VarChar(100)
@@ -70,21 +82,27 @@ model Empleado {
   email        String?   @db.VarChar(100)
   telefono     String?   @db.VarChar(30)
   fechaIngreso DateTime? @map("fecha_ingreso") @db.Date
+  createdAt    DateTime  @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt    DateTime  @default(now()) @updatedAt @map("updated_at") @db.DateTime(3)
   pedidos      Pedido[]
 
   @@map("empleados")
 }
 
+// Una compañía de envío puede entregar varios pedidos
 model CompaniaEnvio {
   id       Int      @id @default(autoincrement())
   nombre   String   @db.VarChar(100)
   telefono String   @db.VarChar(30)
   email    String   @db.VarChar(100)
+  createdAt DateTime @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.DateTime(3)
   pedidos  Pedido[]
 
   @@map("companias_envio")
 }
 
+// Un pedido pertenece a un cliente, un empleado y una compañía de envío
 model Pedido {
   id              Int             @id @default(autoincrement())
   clienteId       Int             @map("cliente_id")
@@ -94,6 +112,8 @@ model Pedido {
   fechaEnvio      DateTime?       @map("fecha_envio")
   estado          EstadoPedido    @default(pendiente)
   costoEnvio      Decimal         @default(0.00) @map("costo_envio") @db.Decimal(10, 2)
+  createdAt       DateTime        @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt       DateTime        @default(now()) @updatedAt @map("updated_at") @db.DateTime(3)
   detalles        DetallePedido[]
   cliente         Cliente         @relation(fields: [clienteId], references: [id])
   companiaEnvio   CompaniaEnvio   @relation(fields: [companiaEnvioId], references: [id])
@@ -105,12 +125,15 @@ model Pedido {
   @@map("pedidos")
 }
 
+// Un detalle de pedido pertenece a un pedido y a un producto
 model DetallePedido {
   pedidoId   Int      @map("pedido_id")
   productoId Int      @map("producto_id")
   cantidad   Int
   precioCU   Decimal  @map("precio_unitario") @db.Decimal(10, 2)
   descuento  Decimal  @default(0.00) @db.Decimal(4, 2)
+  createdAt  DateTime @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt  DateTime @default(now()) @updatedAt @map("updated_at") @db.DateTime(3)
   pedido     Pedido   @relation(fields: [pedidoId], references: [id], onDelete: Cascade)
   producto   Producto @relation(fields: [productoId], references: [id])
 
@@ -118,7 +141,7 @@ model DetallePedido {
   @@index([productoId], map: "detalle_pedido_producto_id_fkey")
   @@map("detalle_pedido")
 }
-
+// Estados de un pedido
 enum EstadoPedido {
   pendiente
   enviado

@@ -46,7 +46,7 @@ async function listar({ ciudad, q }: FiltrosProveedor = {}) {
         }
       }
     },
-    orderBy: { nombre: 'asc' },
+    orderBy: { nombre: 'asc' }
   });
 
   return proveedores.map(({ productos, ...proveedor }) => ({
@@ -94,7 +94,7 @@ async function productosDe(id: number) {
         select: { nombre: true }
       }
     },
-    orderBy: { nombre: 'asc' },
+    orderBy: { nombre: 'asc' }
   }).then((productos) =>
     productos.map(({ categoria, ...producto }) => ({
       ...producto,

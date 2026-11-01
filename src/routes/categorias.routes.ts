@@ -3,7 +3,7 @@ import ctrl from '../controllers/categorias.controller.js';
 import { createCategoriasValidator, obtenerIDValidator } from '../validators/categorias.validator.js'
 
 const router = express.Router();
-
+// ctrl se ejecuta después de que se ejecuten los middlewares de validación.
 router.get('/', ctrl.listar);
 router.get('/:id', obtenerIDValidator, ctrl.obtener);
 router.post('/', createCategoriasValidator, ctrl.crear);

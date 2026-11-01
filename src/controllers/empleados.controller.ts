@@ -11,14 +11,17 @@ const buscarOFallar = async (id: number) => {
   }
 };
 
+// GET colección: presenta el listado generado por el modelo.
 const listar = asyncHandler(async (req, res) => {
   res.json(await Empleado.listar());
 });
 
+// GET por ID: busca el empleado indicado.
 const obtener = asyncHandler(async (req, res) => {
   res.json(await buscarOFallar(parseId(req.params.id)));
 });
 
+// POST: nombre y apellido son obligatorios; devuelve el registro creado.
 const crear = asyncHandler(async (req, res) => {
   requerir(req.body, ['nombre', 'apellido']);
   const id = await Empleado.crear(req.body);
@@ -28,6 +31,8 @@ const crear = asyncHandler(async (req, res) => {
   });
 });
 
+
+// PUT: actualiza los campos del empleado como una operación completa.
 const actualizar = asyncHandler(async (req, res) => {
   const id = parseId(req.params.id);
   requerir(req.body, ['nombre', 'apellido']);
@@ -39,6 +44,7 @@ const actualizar = asyncHandler(async (req, res) => {
   });
 });
 
+// PATCH: valida únicamente los campos enviados y conserva sin cambios los omitidos.
 const actualizarParcial = asyncHandler(async (req, res) => {
   const id = parseId(req.params.id);
   requerir(req.body, []);
@@ -57,6 +63,7 @@ const actualizarParcial = asyncHandler(async (req, res) => {
     (campo) => !camposPermitidos.includes(campo),
   );
 
+  // Validación de los campos enviados
   if (camposNoPermitidos.length) {
     throw new HttpError(400, `Campos no permitidos: ${camposNoPermitidos.join(', ')}`);
   }
@@ -86,6 +93,7 @@ const actualizarParcial = asyncHandler(async (req, res) => {
     throw new HttpError(400, 'El campo fecha_ingreso debe ser una fecha válida o null');
   }
 
+  // Verifica que el empleado exista antes de actualizar
   await buscarOFallar(id);
   const empleado = await Empleado.actualizarParcial(
     id,
@@ -97,9 +105,14 @@ const actualizarParcial = asyncHandler(async (req, res) => {
   });
 });
 
+
+// DELETE: valida existencia y borra al empleado.
 const eliminar = asyncHandler(async (req, res) => {
   const id = parseId(req.params.id);
   await buscarOFallar(id);
+  if (await Empleado.tieneVentas(id)) {
+    throw new HttpError(409, 'No se puede eliminar el empleado porque tiene ventas asociadas');
+  }
   await Empleado.eliminar(id);
   res.json({ mensaje: 'Empleado eliminado correctamente' });
 });

@@ -13,11 +13,12 @@ const ERRORES_MYSQL: Record<string, [number, string]> = {
   ER_TRUNCATED_WRONG_VALUE: [400, 'Algún valor tiene un formato inválido'],
 };
 
+// Respuesta para cualquier URL que no haya sido atendida por un router.
 const noEncontrada: RequestHandler = (req, res) => {
   res.status(404).json({ error: 'Ruta no encontrada' });
 };
 
-// eslint-disable-next-line no-unused-vars
+// Los errores de dominio ya contienen el estado HTTP y el mensaje público.
 const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   if (err instanceof HttpError) {
     return res.status(err.status).json({ error: err.message });

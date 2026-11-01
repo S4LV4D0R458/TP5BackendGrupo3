@@ -4,6 +4,7 @@ export {
   crear,
   actualizar,
   actualizarParcial,
+  tieneVentas,
   eliminar,
 } from '../repositories/empleados.repository.js';
 export type { DatosEmpleadoParcial } from '../repositories/empleados.repository.js';

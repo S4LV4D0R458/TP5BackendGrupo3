@@ -5,16 +5,17 @@ import { HttpError } from '../utils/http.js';
 interface CrearDetalleInput {
   producto_id: number;
   cantidad: number;
-  descuento?: number;
+  descuento?: number | 0;
 }
 
 interface ActualizarDetalleInput {
   cantidad: number;
   precio_unitario: number;
-  descuento?: number;
+  descuento?: number | 0;
 }
 
 const verificarPedidoPendiente = async (tx: Prisma.TransactionClient, pedidoId: number): Promise<void> => {
+  // Toda modificación de líneas está restringida a pedidos que todavía no fueron procesados.
   const pedido = await tx.pedido.findUnique({
     where: { id: pedidoId },
     select: { estado: true },
@@ -28,6 +29,8 @@ const verificarPedidoPendiente = async (tx: Prisma.TransactionClient, pedidoId: 
   }
 };
 
+
+// Convierte datos Decimal y la relación producto al formato de salida de la API.
 const mapearDetalle = (detalle: {
   pedidoId: number;
   productoId: number;
@@ -50,18 +53,20 @@ const mapearDetalle = (detalle: {
   };
 };
 
+// Lista las líneas de un pedido, ordenadas por nombre de producto.
 async function listar(pedidoId: number) {
   const detalles = await prisma.detallePedido.findMany({ where: { pedidoId }, include: {
       producto: {
-        select: { nombre: true },
-      },
+        select: { nombre: true }
+      }
     }, orderBy: {
-      producto: { nombre: 'asc' },
-    },
+      producto: { nombre: 'asc' }
+    }
   });
   return detalles.map(mapearDetalle);
 }
 
+// Busca usando la clave compuesta pedidoId + productoId.
 async function obtener(pedidoId: number, productoId: number) {
   const detalle = await prisma.detallePedido.findUnique({
     where: {
@@ -69,14 +74,15 @@ async function obtener(pedidoId: number, productoId: number) {
     },
     include: {
       producto: {
-        select: { nombre: true },
-      },
-    },
+        select: { nombre: true }
+      }
+    }
   });
 
   return detalle ? mapearDetalle(detalle) : undefined;
 }
 
+// Crea un detalle de pedido y actualiza el stock del producto.
 async function crear(pedidoId: number,{producto_id, cantidad, descuento }: CrearDetalleInput,
 ): Promise<void> {
   await prisma.$transaction(async (tx) => {
@@ -90,13 +96,13 @@ async function crear(pedidoId: number,{producto_id, cantidad, descuento }: Crear
       select: {
         precio: true,
         stock: true
-      },
+      }
     });
 
     if (!producto) {
       throw new HttpError(
         404,
-        `El producto ${producto_id} no existe o está inactivo`,
+        `El producto ${producto_id} no existe o está inactivo`
       );
     }
 
@@ -104,6 +110,7 @@ async function crear(pedidoId: number,{producto_id, cantidad, descuento }: Crear
       throw new HttpError(400,`Stock insuficiente para el producto ${producto_id}`);
     }
 
+    // Alta de detalle y descuento de stock son atómicos: ambos se confirman o ambos se revierten.
     await tx.detallePedido.create({
       data: {
         pedidoId,
@@ -133,10 +140,10 @@ async function actualizar(
 
     const detalle = await tx.detallePedido.findUnique({
       where: {
-        pedidoId_productoId: { pedidoId, productoId },
+        pedidoId_productoId: { pedidoId, productoId }
       },
       select: {
-        cantidad: true,
+        cantidad: true
       }
     });
 
@@ -144,6 +151,7 @@ async function actualizar(
       throw new HttpError(404, 'Detalle de pedido no encontrado');
     }
 
+    // La diferencia contra la cantidad anterior define cuánto stock retirar o devolver.
     const diferencia = cantidad - detalle.cantidad;
 
     if (diferencia > 0) {
@@ -151,7 +159,7 @@ async function actualizar(
         where: { id: productoId },
         select: {
           stock: true,
-          activo: true,
+          activo: true
         }
       });
 
@@ -168,7 +176,7 @@ async function actualizar(
 
       await tx.producto.update({
         where: { id: productoId },
-        data: { stock: { decrement: diferencia }},
+        data: { stock: { decrement: diferencia }}
       });
 
     } else if (diferencia < 0) {
@@ -190,11 +198,13 @@ async function actualizar(
   });
 }
 
+// Elimina un detalle de pedido y devuelve el stock del producto.
 async function eliminar(
   pedidoId: number,
-  productoId: number,
+  productoId: number
 ): Promise<void> {
   await prisma.$transaction(async (tx) => {
+
     await verificarPedidoPendiente(tx, pedidoId);
 
     const detalle = await tx.detallePedido.findUnique({
@@ -203,18 +213,19 @@ async function eliminar(
       },
       select: {
         cantidad: true
-      },
+      }
     });
 
     if (!detalle) {
       throw new HttpError(404, 'Detalle de pedido no encontrado');
     }
-
+    
+    // Al quitar la línea se reintegra al inventario la cantidad que se había reservado.
     await tx.producto.update({
       where: { id: productoId },
       data: {
         stock: { increment: detalle.cantidad }
-      },
+      }
     });
 
     await tx.detallePedido.delete({

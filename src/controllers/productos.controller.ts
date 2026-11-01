@@ -38,6 +38,7 @@ const validarBody: (body: unknown) => asserts body is DatosProducto = (body) => 
     throw new HttpError(400, 'El campo proveedor_id debe ser un entero positivo');
   }
   parseId(datos.proveedor_id, 'proveedor_id');
+
   // La categoría puede ser null si fue eliminada y la FK aplicó ON DELETE SET NULL.
   if (datos.categoria_id !== null) parseId(datos.categoria_id, 'categoria_id');
   if (datos.activo !== undefined && typeof datos.activo !== 'boolean') {
@@ -45,18 +46,21 @@ const validarBody: (body: unknown) => asserts body is DatosProducto = (body) => 
   }
 };
 
+//función para buscar un producto por ID o lanzar un error 404 si no se encuentra
 const buscarOFallar = async (id: number) => {
   const producto = await Producto.obtener(id);
   if (!producto) throw new HttpError(404, 'Producto no encontrado');
   return producto;
 };
 
+// GET colección: transforma filtros de query string y los envía al repositorio.
 const listar = asyncHandler(async (req, res) => {
   const categoriaId = numOpcional(req.query.categoria_id, 'categoria_id');
   const proveedorId = numOpcional(req.query.proveedor_id, 'proveedor_id');
   const precioMin = numOpcional(req.query.precio_min, 'precio_min');
   const precioMax = numOpcional(req.query.precio_max, 'precio_max');
 
+  // Validación de rangos de precio.
   const filtros = {
     ...(categoriaId !== undefined && { categoria_id: categoriaId }),
     ...(proveedorId !== undefined && { proveedor_id: proveedorId }),
@@ -67,25 +71,30 @@ const listar = asyncHandler(async (req, res) => {
   res.json(await Producto.listar(filtros));
 });
 
+// GET por ID: responde con el producto o informa que no existe.
 const obtener = asyncHandler(async (req, res) => {
   res.json(await buscarOFallar(parseId(req.params.id)));
 });
 
+// Devuelve productos cuyo stock es menor o igual al límite solicitado.
 const stockBajo = asyncHandler(async (req, res) => {
   const limite = numOpcional(req.query.limite, 'limite') ?? 20;
   res.json(await Producto.stockBajo(limite));
 });
 
+// Calcula cantidad, precio promedio y valor del inventario de cada categoría.
 const resumenPorCategoria = asyncHandler(async (req, res) => {
   res.json(await Producto.resumenPorCategoria());
 });
 
+// POST: valida referencias y datos; el repositorio devuelve el ID.
 const crear = asyncHandler(async (req, res) => {
   validarBody(req.body);
   const id = await Producto.crear(req.body);
   res.status(201).json(await Producto.obtener(id));
 });
 
+// PUT: valida el cuerpo completo y confirma que el producto ya exista.
 const actualizar = asyncHandler(async (req, res) => {
   const id = parseId(req.params.id);
   validarBody(req.body);
@@ -94,6 +103,7 @@ const actualizar = asyncHandler(async (req, res) => {
   res.json(await Producto.obtener(id));
 });
 
+// DELETE: verifica existencia y comunica si el producto pudo ser eliminado.
 const eliminar = asyncHandler(async (req, res) => {
   const id = parseId(req.params.id);
   await buscarOFallar(id);

@@ -18,13 +18,17 @@ CREATE TABLE proveedores (
   email VARCHAR(100),
   direccion VARCHAR(150),
   ciudad VARCHAR(80),
-  activo TINYINT(1) NOT NULL DEFAULT 1
+  activo TINYINT(1) NOT NULL DEFAULT 1,
+  created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3)
 ) ENGINE=InnoDB;
 
 CREATE TABLE categorias (
   id INT AUTO_INCREMENT PRIMARY KEY,
   nombre VARCHAR(80) NOT NULL UNIQUE,
-  descripcion VARCHAR(200)
+  descripcion VARCHAR(200),
+  created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3)
 ) ENGINE=InnoDB;
 
 CREATE TABLE productos (
@@ -37,6 +41,8 @@ CREATE TABLE productos (
   -- Permite conservar productos sin categoría cuando se elimina una categoría.
   categoria_id INT NULL,
   activo TINYINT(1) NOT NULL DEFAULT 1,
+  created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   FOREIGN KEY (proveedor_id) REFERENCES proveedores(id),
   -- Al borrar la categoría, sus productos quedan con categoria_id en NULL.
   FOREIGN KEY (categoria_id) REFERENCES categorias(id) ON DELETE SET NULL
@@ -50,7 +56,9 @@ CREATE TABLE clientes (
   telefono VARCHAR(30),
   email VARCHAR(100) UNIQUE,
   direccion VARCHAR(150),
-  ciudad VARCHAR(80)
+  ciudad VARCHAR(80),
+  created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3)
 ) ENGINE=InnoDB;
 
 CREATE TABLE empleados (
@@ -60,14 +68,18 @@ CREATE TABLE empleados (
   cargo VARCHAR(80),
   email VARCHAR(100) UNIQUE,
   telefono VARCHAR(30),
-  fecha_ingreso DATE
+  fecha_ingreso DATE,
+  created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3)
 ) ENGINE=InnoDB;
 
 CREATE TABLE companias_envio (
   id INT AUTO_INCREMENT PRIMARY KEY,
   nombre VARCHAR(100) NOT NULL,
   telefono VARCHAR(30),
-  email VARCHAR(100)
+  email VARCHAR(100),
+  created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3)
 ) ENGINE=InnoDB;
 
 CREATE TABLE pedidos (
@@ -79,6 +91,8 @@ CREATE TABLE pedidos (
   fecha_envio DATETIME NULL,
   estado ENUM('pendiente','enviado','entregado','cancelado') NOT NULL DEFAULT 'pendiente',
   costo_envio DECIMAL(10,2) NOT NULL DEFAULT 0,
+  created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   FOREIGN KEY (cliente_id) REFERENCES clientes(id),
   FOREIGN KEY (empleado_id) REFERENCES empleados(id),
   FOREIGN KEY (compania_envio_id) REFERENCES companias_envio(id)
@@ -91,6 +105,8 @@ CREATE TABLE detalle_pedido (
   cantidad INT NOT NULL CHECK (cantidad > 0),
   precio_unitario DECIMAL(10,2) NOT NULL CHECK (precio_unitario >= 0),
   descuento DECIMAL(4,2) NOT NULL DEFAULT 0,
+  created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   PRIMARY KEY (pedido_id, producto_id),
   FOREIGN KEY (pedido_id) REFERENCES pedidos(id) ON DELETE CASCADE,
   FOREIGN KEY (producto_id) REFERENCES productos(id)

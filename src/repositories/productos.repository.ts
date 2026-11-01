@@ -33,6 +33,8 @@ type ProductoConRelaciones = Prisma.ProductoGetPayload<{
   include: typeof incluirRelaciones;
 }>;
 
+
+// Centraliza la traducción de errores de Prisma a respuestas HTTP comprensibles.
 async function conManejoDeErrores<T>(operacion: () => Promise<T>): Promise<T> {
   try {
     return await operacion();
@@ -55,6 +57,7 @@ async function conManejoDeErrores<T>(operacion: () => Promise<T>): Promise<T> {
   }
 }
 
+// Convierte Decimal y relaciones Prisma al formato público de la API.
 function presentarProducto(producto: ProductoConRelaciones) {
   return {
     id: producto.id,
@@ -81,6 +84,7 @@ const seleccionarProducto = {
   categoriaId: true,
 } satisfies Prisma.ProductoSelect;
 
+// Aplica filtros opcionales y presenta los resultados ordenados por nombre.
 async function listar({
   categoria_id,
   proveedor_id,
@@ -111,6 +115,8 @@ async function listar({
   });
 }
 
+
+// Recupera un producto y sus datos de proveedor/categoría.
 async function obtener(id: number) {
   return conManejoDeErrores(async () => {
     const producto = await prisma.producto.findUnique({
@@ -122,6 +128,8 @@ async function obtener(id: number) {
   });
 }
 
+
+// Devuelve primero los productos con menos existencias, hasta el límite indicado.
 async function stockBajo(limite: number) {
   return conManejoDeErrores(async () => {
     const productos = await prisma.producto.findMany({
@@ -134,6 +142,8 @@ async function stockBajo(limite: number) {
   });
 }
 
+
+// Calcula cantidad de productos, precio promedio y valor del stock por categoría.
 async function resumenPorCategoria() {
   return conManejoDeErrores(async () => {
     const categorias = await prisma.categoria.findMany({
@@ -170,6 +180,8 @@ async function resumenPorCategoria() {
   });
 }
 
+
+// Crea el producto con valores por defecto para descripción y stock.
 async function crear(datos: DatosProducto) {
   return conManejoDeErrores(async () => {
     const producto = await prisma.producto.create({
@@ -188,6 +200,7 @@ async function crear(datos: DatosProducto) {
   });
 }
 
+// Actualiza el producto y conecta o desconecta sus relaciones según los IDs recibidos.
 async function actualizar(id: number, datos: DatosProducto) {
   return conManejoDeErrores(async () => {
     const producto: Prisma.ProductoUpdateInput = {
@@ -214,6 +227,7 @@ async function actualizar(id: number, datos: DatosProducto) {
   });
 }
 
+// Traduce errores de referencia y ausencia a mensajes específicos antes de propagar otros errores.
 async function eliminar(id: number) {
   try {
     await prisma.producto.delete({

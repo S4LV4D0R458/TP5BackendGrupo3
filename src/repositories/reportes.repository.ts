@@ -7,6 +7,7 @@ type ProductoMasVendido = {
   pedidos_distintos: bigint;
 };
 
+// Filtra los productos más vendidos.
 async function productosMasVendidos(limite: number) {
   const rows = await prisma.$queryRaw<ProductoMasVendido[]>`
     SELECT p.id AS producto_id,
@@ -22,6 +23,7 @@ async function productosMasVendidos(limite: number) {
     LIMIT ${limite}
   `;
 
+  // Convierte los totales de tipo Decimal a Number.
   return rows.map((row) => {
     const unidadesVendidas = Number(row.unidades_vendidas);
     const pedidosDistintos = Number(row.pedidos_distintos);
@@ -33,8 +35,8 @@ async function productosMasVendidos(limite: number) {
       producto_id: row.producto_id,
       producto: row.producto,
       unidades_vendidas: unidadesVendidas,
-      pedidos_distintos: pedidosDistintos,
-    };
+      pedidos_distintos: pedidosDistintos
+    }
   });
 }
 

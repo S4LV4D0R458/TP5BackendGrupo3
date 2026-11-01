@@ -4,12 +4,14 @@ import { HttpError, asyncHandler, parseId, numOpcional, requerir } from '../util
 
 const ESTADOS: EstadoPedido[] = ['pendiente', 'enviado', 'entregado', 'cancelado'];
 
+// Función para buscar un pedido por ID o lanzar un error 404 si no se encuentra
 const buscarOFallar = async (id: number) => {
   const pedido = await Pedido.obtener(id);
   if (!pedido) throw new HttpError(404, 'Pedido no encontrado');
   return pedido;
 };
 
+// Lista pedidos aplicando filtros opcionales y rechazando estados o fechas mal tipados.
 const listar = asyncHandler(async (req, res) => {
   const estadoQuery = req.query.estado;
   if (
@@ -43,10 +45,12 @@ const listar = asyncHandler(async (req, res) => {
   );
 });
 
+// Recupera un pedido por ID, incluyendo la presentación preparada por el modelo.
 const obtener = asyncHandler(async (req, res) => {
   res.json(await buscarOFallar(parseId(req.params.id)));
 });
 
+// Crea un pedido con al menos un producto; comprueba IDs, cantidades y descuentos.
 const crear = asyncHandler(async (req, res) => {
   requerir(req.body, ['cliente_id', 'empleado_id', 'compania_envio_id', 'items']);
   const { items } = req.body;
@@ -54,6 +58,7 @@ const crear = asyncHandler(async (req, res) => {
   parseId(req.body.empleado_id, 'empleado_id');
   parseId(req.body.compania_envio_id, 'compania_envio_id');
 
+  // Validación de items: debe ser un arreglo con al menos un producto, y cada producto debe tener un ID válido, cantidad positiva y descuento entre 0 y 1.
   if (!Array.isArray(items) || items.length === 0) {
     throw new HttpError(400, 'items debe ser un arreglo con al menos un producto');
   }
@@ -71,6 +76,7 @@ const crear = asyncHandler(async (req, res) => {
   res.status(201).json(await Pedido.obtener(id));
 });
 
+// Cambia el estado y devuelve el pedido actualizado.
 const actualizarEstado = asyncHandler(async (req, res) => {
   const id = parseId(req.params.id);
   requerir(req.body, ['estado']);
@@ -82,6 +88,8 @@ const actualizarEstado = asyncHandler(async (req, res) => {
   res.json(await Pedido.obtener(id));
 });
 
+
+// Elimina el pedido existente; sus detalles dependen de la regla de cascada de la base.
 const eliminar = asyncHandler(async (req, res) => {
   const id = parseId(req.params.id);
   await buscarOFallar(id);
@@ -89,10 +97,13 @@ const eliminar = asyncHandler(async (req, res) => {
   res.json({ mensaje: 'Pedido eliminado correctamente' });
 });
 
+// Agrupa ventas no canceladas por cliente.
 const reportePorCliente = asyncHandler(async (req, res) => {
   res.json(await Pedido.reportePorCliente());
 });
 
+
+// Agrupa ventas no canceladas por empleado.
 const reportePorEmpleado = asyncHandler(async (req, res) => {
   res.json(await Pedido.reportePorEmpleado());
 });

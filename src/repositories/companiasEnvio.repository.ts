@@ -9,6 +9,8 @@ interface DatosCompaniaEnvio {
 }
 
 function manejarErrorPrisma(e: unknown): never {
+  
+// Borra el registro indicado; la base rechaza el borrado si existen referencias obligatorias.
   if (e instanceof Prisma.PrismaClientKnownRequestError) {
     if (e.code === 'P2025') {
       throw new HttpError(404, 'Compañía de envío no encontrada');
@@ -29,6 +31,7 @@ function manejarErrorPrisma(e: unknown): never {
   throw new HttpError(500, 'Error al procesar la compañía de envío');
 }
 
+// Lista únicamente los campos públicos y ordena por nombre.
 async function listar() {
   try {
     return await prisma.companiaEnvio.findMany({
@@ -47,6 +50,7 @@ async function listar() {
   }
 }
 
+// Busca una compañía y distingue ausencia de errores internos.
 async function obtener(id: number) {
   try {
     const compania = await prisma.companiaEnvio.findUnique({
@@ -70,6 +74,7 @@ async function obtener(id: number) {
   }
 }
 
+// Inserta la compañía y devuelve su ID.
 async function crear(datos: DatosCompaniaEnvio) {
   try {
     const compania = await prisma.companiaEnvio.create({
@@ -89,6 +94,7 @@ async function crear(datos: DatosCompaniaEnvio) {
   }
 }
 
+// Reemplaza los datos editables de la compañía.
 async function actualizar(id: number, datos: DatosCompaniaEnvio) {
   try {
     return await prisma.companiaEnvio.update({
@@ -104,6 +110,7 @@ async function actualizar(id: number, datos: DatosCompaniaEnvio) {
   }
 }
 
+// Elimina la compañía; los errores por pedidos asociados se traducen en manejarErrorPrisma.
 async function eliminar(id: number) {
   try {
     await prisma.companiaEnvio.delete({

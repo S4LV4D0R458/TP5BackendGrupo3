@@ -45,11 +45,13 @@ type DetalleConImporte = {
   descuento: Prisma.Decimal;
 };
 
+// Importe de una línea: cantidad por precio unitario, descontando la proporción indicada.
 const importeDetalle = (detalle: DetalleConImporte) =>
   detalle.cantidad *
   Number(detalle.precioCU) *
   (1 - Number(detalle.descuento));
 
+  
 async function conManejoDeErrores<T>(operacion: () => Promise<T>): Promise<T> {
   try {
     return await operacion();
@@ -72,6 +74,7 @@ async function conManejoDeErrores<T>(operacion: () => Promise<T>): Promise<T> {
   }
 }
 
+// Adapta el pedido relacionado de Prisma al JSON que consume la API y calcula sus totales.
 function presentarPedido(pedido: PedidoCompleto) {
   const detalle = pedido.detalles.map((item) => ({
     producto_id: item.productoId,
@@ -105,6 +108,7 @@ function presentarPedido(pedido: PedidoCompleto) {
   };
 }
 
+// Filtra por cliente, empleado, estado o rango de fecha y devuelve resúmenes sin el detalle.
 async function listar({
   cliente_id,
   empleado_id,
@@ -136,6 +140,7 @@ async function listar({
   });
 }
 
+// Obtiene el pedido con todas sus relaciones para construir una respuesta completa.
 async function obtener(id: number) {
   return conManejoDeErrores(async () => {
     const pedido = await prisma.pedido.findUnique({
@@ -147,6 +152,7 @@ async function obtener(id: number) {
   });
 }
 
+// Crea cabecera, reduce existencias y guarda líneas dentro de una única transacción.
 async function crear({
   cliente_id,
   empleado_id,
@@ -156,6 +162,7 @@ async function crear({
 }: DatosPedido) {
   return conManejoDeErrores(() =>
     prisma.$transaction(async (tx) => {
+      // Si falla cualquier línea (producto, stock o detalle), la transacción revierte todo.
       const pedido = await tx.pedido.create({
         data: {
           clienteId: cliente_id,
@@ -168,6 +175,7 @@ async function crear({
       });
 
       for (const item of items) {
+        // Solo se venden productos activos; el precio guardado queda fijado al del momento de compra.
         const producto = await tx.producto.findFirst({
           where: {
             id: item.producto_id,
@@ -203,7 +211,8 @@ async function crear({
             `Stock insuficiente para el producto ${item.producto_id}`,
           );
         }
-
+        
+        // La clave compuesta evita cargar dos veces el mismo producto en un pedido.
         await tx.detallePedido.create({
           data: {
             pedidoId: pedido.id,
@@ -220,6 +229,7 @@ async function crear({
   );
 }
 
+// Actualiza el estado; al pasar a "enviado" registra la fecha actual de envío.
 async function actualizarEstado(id: number, estado: EstadoPedido) {
   return conManejoDeErrores(async () => {
     await prisma.pedido.update({
@@ -232,12 +242,14 @@ async function actualizarEstado(id: number, estado: EstadoPedido) {
   });
 }
 
+// Elimina el pedido; sus detalles se eliminan por la relación en cascada.
 async function eliminar(id: number) {
   return conManejoDeErrores(async () => {
     await prisma.pedido.delete({ where: { id } });
   });
 }
 
+// Agrupa pedidos no cancelados por cliente y ordena por importe vendido descendente.
 async function reportePorCliente() {
   return conManejoDeErrores(async () => {
     const clientes = await prisma.cliente.findMany({
@@ -250,6 +262,7 @@ async function reportePorCliente() {
     });
 
     return clientes
+    // Calcula el total facturado por cliente sumando los importes de cada detalle de pedido.
       .map((cliente) => {
         const pedidos = cliente.pedidos;
         const totalFacturado = pedidos.reduce(
@@ -275,6 +288,7 @@ async function reportePorCliente() {
   });
 }
 
+// Agrupa pedidos no cancelados por empleado y ordena por importe vendido descendente.
 async function reportePorEmpleado() {
   return conManejoDeErrores(async () => {
     const empleados = await prisma.empleado.findMany({
