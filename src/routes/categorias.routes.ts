@@ -4,6 +4,7 @@ import { createCategoriasValidator, obtenerIDValidator } from '../validators/cat
 
 const router = express.Router();
 
+//Las rutas validan 
 router.get('/', ctrl.listar, createCategoriasValidator, obtenerIDValidator);
 router.get('/:id', ctrl.obtener, createCategoriasValidator, obtenerIDValidator);
 router.post('/', ctrl.crear, createCategoriasValidator, obtenerIDValidator);
