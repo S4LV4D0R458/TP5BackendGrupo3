@@ -12,7 +12,7 @@ interface DatosProveedor {
   email: string;
   direccion: string;
   ciudad: string;
-  activo?: boolean;
+  activo: boolean;
 }
 
 const seleccionarProveedor = {
@@ -109,11 +109,11 @@ async function crear(datos: DatosProveedor) {
   const proveedor = await prisma.proveedor.create({
     data: {
       nombre: datos.nombre,
-      contacto: datos.contacto ?? null,
-      telefono: datos.telefono ?? null,
-      email: datos.email ?? null,
-      direccion: datos.direccion ?? null,
-      ciudad: datos.ciudad ?? null,
+      contacto: datos.contacto,
+      telefono: datos.telefono,
+      email: datos.email,
+      direccion: datos.direccion,
+      ciudad: datos.ciudad,
       ...(datos.activo !== undefined && { activo: datos.activo })
     },
     select: { id: true }

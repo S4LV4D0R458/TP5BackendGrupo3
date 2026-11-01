@@ -1,3 +1,4 @@
+// Importación para adpatar Prisma, MariaDB y DotENV
 import { PrismaClient } from "../generated/prisma/client.js";
 import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 import mariadb from "mariadb";
@@ -5,6 +6,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+// Variable pool para obtener los datos .env
 const pool = mariadb.createPool({
   host: process.env.DB_HOST as string,
   port: Number(process.env.DB_PORT),
@@ -13,6 +15,7 @@ const pool = mariadb.createPool({
   database: process.env.DB_NAME as string
 });
 
+// Crear nuevo
 const adapter = new PrismaMariaDb(pool);
 
 export const prisma = new PrismaClient({ adapter });
