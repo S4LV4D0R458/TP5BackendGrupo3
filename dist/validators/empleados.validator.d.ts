@@ -1,0 +1,4 @@
+export declare const validarEmpleado: (import("express").RequestHandler<import("express-serve-static-core").ParamsDictionary, any, any, import("qs").ParsedQs, Record<string, any>> | import("express-validator").ValidationChain)[];
+export declare const validarEmpleadoParcial: (import("express").RequestHandler<import("express-serve-static-core").ParamsDictionary, any, any, import("qs").ParsedQs, Record<string, any>> | import("express-validator").ValidationChain)[];
+export declare const obtenerIDValidator: (import("express").RequestHandler<import("express-serve-static-core").ParamsDictionary, any, any, import("qs").ParsedQs, Record<string, any>> | import("express-validator").ValidationChain)[];
+//# sourceMappingURL=empleados.validator.d.ts.map

@@ -1,23 +1,15 @@
--- -----------------------------------------------------
--- Script para recrear la base de datos
--- -----------------------------------------------------
-
 DROP DATABASE IF EXISTS distribuidora;
 CREATE DATABASE distribuidora CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE distribuidora;
 
--- -----------------------------------------------------
--- Tablas
--- -----------------------------------------------------
-
 CREATE TABLE proveedores (
   id INT AUTO_INCREMENT PRIMARY KEY,
   nombre VARCHAR(100) NOT NULL,
-  contacto VARCHAR(100),
-  telefono VARCHAR(30),
-  email VARCHAR(100),
-  direccion VARCHAR(150),
-  ciudad VARCHAR(80),
+  contacto VARCHAR(100) NOT NULL,
+  telefono VARCHAR(30) NOT NULL,
+  email VARCHAR(100) NOT NULL,
+  direccion VARCHAR(150) NOT NULL,
+  ciudad VARCHAR(80) NOT NULL,
   activo TINYINT(1) NOT NULL DEFAULT 1,
   created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3)
@@ -25,38 +17,38 @@ CREATE TABLE proveedores (
 
 CREATE TABLE categorias (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  nombre VARCHAR(80) NOT NULL UNIQUE,
-  descripcion VARCHAR(200),
+  nombre VARCHAR(80) NOT NULL,
+  descripcion VARCHAR(200) NOT NULL,
   created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3)
 ) ENGINE=InnoDB;
 
 CREATE TABLE productos (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  nombre VARCHAR(120) NOT NULL,
-  descripcion VARCHAR(255),
-  precio DECIMAL(10,2) NOT NULL CHECK (precio >= 0),
-  stock INT NOT NULL DEFAULT 0 CHECK (stock >= 0),
+  nombre VARCHAR(100) NOT NULL,
+  descripcion VARCHAR(200) NOT NULL,
+  precio DECIMAL(10,2) NOT NULL,
+  stock INT NOT NULL DEFAULT 0,
   proveedor_id INT NOT NULL,
-  -- Permite conservar productos sin categoría cuando se elimina una categoría.
-  categoria_id INT NULL,
+  categoria_id INT NOT NULL,
   activo TINYINT(1) NOT NULL DEFAULT 1,
   created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-  FOREIGN KEY (proveedor_id) REFERENCES proveedores(id),
-  -- Al borrar la categoría, sus productos quedan con categoria_id en NULL.
-  FOREIGN KEY (categoria_id) REFERENCES categorias(id) ON DELETE SET NULL
+  INDEX productos_categoria_id_fkey (categoria_id),
+  INDEX productos_proveedor_id_fkey (proveedor_id),
+  FOREIGN KEY (proveedor_id) REFERENCES proveedores(id) ON DELETE RESTRICT ON UPDATE CASCADE,
+  FOREIGN KEY (categoria_id) REFERENCES categorias(id) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE clientes (
   id INT AUTO_INCREMENT PRIMARY KEY,
   nombre VARCHAR(100) NOT NULL,
-  apellido VARCHAR(100),
-  empresa VARCHAR(100),
-  telefono VARCHAR(30),
-  email VARCHAR(100) UNIQUE,
-  direccion VARCHAR(150),
-  ciudad VARCHAR(80),
+  apellido VARCHAR(100) NOT NULL,
+  empresa VARCHAR(100) NOT NULL,
+  telefono VARCHAR(30) NOT NULL,
+  email VARCHAR(100) NOT NULL UNIQUE,
+  direccion VARCHAR(150) NOT NULL,
+  ciudad VARCHAR(80) NOT NULL,
   created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3)
 ) ENGINE=InnoDB;
@@ -65,10 +57,10 @@ CREATE TABLE empleados (
   id INT AUTO_INCREMENT PRIMARY KEY,
   nombre VARCHAR(100) NOT NULL,
   apellido VARCHAR(100) NOT NULL,
-  cargo VARCHAR(80),
-  email VARCHAR(100) UNIQUE,
-  telefono VARCHAR(30),
-  fecha_ingreso DATE,
+  cargo VARCHAR(80) NOT NULL,
+  email VARCHAR(100) NOT NULL,
+  telefono VARCHAR(30) NOT NULL,
+  fecha_ingreso DATE NOT NULL,
   created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3)
 ) ENGINE=InnoDB;
@@ -76,8 +68,8 @@ CREATE TABLE empleados (
 CREATE TABLE companias_envio (
   id INT AUTO_INCREMENT PRIMARY KEY,
   nombre VARCHAR(100) NOT NULL,
-  telefono VARCHAR(30),
-  email VARCHAR(100),
+  telefono VARCHAR(30) NOT NULL,
+  email VARCHAR(100) NOT NULL,
   created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3)
 ) ENGINE=InnoDB;
@@ -87,34 +79,34 @@ CREATE TABLE pedidos (
   cliente_id INT NOT NULL,
   empleado_id INT NOT NULL,
   compania_envio_id INT NOT NULL,
-  fecha_pedido DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  fecha_envio DATETIME NULL,
+  fecha_pedido DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  fecha_envio DATETIME(3) NULL,
   estado ENUM('pendiente','enviado','entregado','cancelado') NOT NULL DEFAULT 'pendiente',
   costo_envio DECIMAL(10,2) NOT NULL DEFAULT 0,
   created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-  FOREIGN KEY (cliente_id) REFERENCES clientes(id),
-  FOREIGN KEY (empleado_id) REFERENCES empleados(id),
-  FOREIGN KEY (compania_envio_id) REFERENCES companias_envio(id)
+  INDEX pedidos_cliente_id_fkey (cliente_id),
+  INDEX pedidos_compania_envio_id_fkey (compania_envio_id),
+  INDEX pedidos_empleado_id_fkey (empleado_id),
+  FOREIGN KEY (cliente_id) REFERENCES clientes(id) ON DELETE RESTRICT ON UPDATE CASCADE,
+  FOREIGN KEY (empleado_id) REFERENCES empleados(id) ON DELETE RESTRICT ON UPDATE CASCADE,
+  FOREIGN KEY (compania_envio_id) REFERENCES companias_envio(id) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
--- Tabla intermedia pedido <-> producto (detalle de la factura)
+
 CREATE TABLE detalle_pedido (
   pedido_id INT NOT NULL,
   producto_id INT NOT NULL,
-  cantidad INT NOT NULL CHECK (cantidad > 0),
-  precio_unitario DECIMAL(10,2) NOT NULL CHECK (precio_unitario >= 0),
+  cantidad INT NOT NULL,
+  precio_unitario DECIMAL(10,2) NOT NULL,
   descuento DECIMAL(4,2) NOT NULL DEFAULT 0,
   created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   PRIMARY KEY (pedido_id, producto_id),
-  FOREIGN KEY (pedido_id) REFERENCES pedidos(id) ON DELETE CASCADE,
-  FOREIGN KEY (producto_id) REFERENCES productos(id)
+  INDEX detalle_pedido_producto_id_fkey (producto_id),
+  FOREIGN KEY (pedido_id) REFERENCES pedidos(id) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (producto_id) REFERENCES productos(id) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB;
-
--- -----------------------------------------------------
--- Datos de prueba
--- -----------------------------------------------------
 
 INSERT INTO proveedores (nombre, contacto, telefono, email, direccion, ciudad) VALUES
 ('Lácteos del Sur', 'Marta Gómez', '2920-111111', 'ventas@lacteossur.com', 'Ruta 3 km 10', 'Viedma'),

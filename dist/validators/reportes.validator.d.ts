@@ -1,0 +1,2 @@
+export declare const validarReportes: (import("express").RequestHandler<import("express-serve-static-core").ParamsDictionary, any, any, import("qs").ParsedQs, Record<string, any>> | import("express-validator").ValidationChain)[];
+//# sourceMappingURL=reportes.validator.d.ts.map

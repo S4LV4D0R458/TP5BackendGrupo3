@@ -225,7 +225,7 @@
               }
             },
             "url": {
-              "raw": "http://localhost:3000/api/categorias/5",
+              "raw": "http://localhost:3000/api/categorias/4",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -234,7 +234,7 @@
               "path": [
                 "api",
                 "categorias",
-                "5"
+                "4"
               ]
             }
           },
@@ -287,7 +287,7 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "http://localhost:3000/api/categorias/5",
+              "raw": "http://localhost:3000/api/categorias/4",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -296,7 +296,7 @@
               "path": [
                 "api",
                 "categorias",
-                "5"
+                "4"
               ]
             }
           },
@@ -466,7 +466,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nombre\": \"María\",\n  \"apellido\": \"Gómez\",\n  \"empresa\": \"Almacén Central\",\n  \"telefono\": \"2920-123456\",\n  \"email\": \"centralalmaceenmariii@gmail.com\",\n  \"direccion\": \"Av.Chile 123\",\n  \"ciudad\": \"General Roca\"\n}",
+              "raw": "{\n  \"nombre\": \"María\",\n  \"apellido\": \"Gómez\",\n  \"empresa\": \"Almacén Central\",\n  \"telefono\": \"2984451271\",\n  \"email\": \"centralalmaceenmariii@gmail.com\",\n  \"direccion\": \"Av.Chile 123\",\n  \"ciudad\": \"General Roca\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -540,7 +540,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nombre\": \"Joaquón\",\n  \"apellido\": \"Barrera\",\n  \"empresa\": \"Verdulería TATUU\",\n  \"telefono\": \"2984-102411\",\n  \"email\": \"tatuuuverdu@gmail.com\",\n  \"direccion\": \"J.Herrera\",\n  \"ciudad\": \"Viedma\"\n}",
+              "raw": "{\n  \"nombre\": \"Joaquón\",\n  \"apellido\": \"Barrera\",\n  \"empresa\": \"Verdulería TATUU\",\n  \"telefono\": \"2984102411\",\n  \"email\": \"tatuuuverdu@gmail.com\",\n  \"direccion\": \"J.Herrera\",\n  \"ciudad\": \"Viedma\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -789,7 +789,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nombre\": \"Transporte Rápido\",\n  \"telefono\": \"2920-999999\",\n  \"email\": \"supptransporterapidoo@gmail.com\"\n}",
+              "raw": "{\n  \"nombre\": \"Transporte Rápido\",\n  \"telefono\": \"2920657412\",\n  \"email\": \"supptransporterapidoo@gmail.com\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -863,7 +863,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nombre\": \"Transporte Rápido\",\n  \"telefono\": \"2920-999999\",\n  \"email\": \"transporterapidoo2@gmail.com\"\n}",
+              "raw": "{\n  \"nombre\": \"Transporte Rápido\",\n  \"telefono\": \"2920999999\",\n  \"email\": \"transporterapidoo2@gmail.com\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -871,7 +871,7 @@
               }
             },
             "url": {
-              "raw": "http://localhost:3000/api/companias-envio/1",
+              "raw": "http://localhost:3000/api/companias-envio/3",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -880,7 +880,7 @@
               "path": [
                 "api",
                 "companias-envio",
-                "1"
+                "3"
               ]
             }
           },
@@ -1112,7 +1112,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nombre\": \"Lucía\",\n  \"apellido\": \"Fernández\",\n  \"cargo\": \"Vendedora\",\n  \"email\": \"luciadistribuidora@gmail.com\",\n  \"telefono\": \"2920-777777\",\n  \"fecha_ingreso\": \"2023-03-01\"\n}",
+              "raw": "{\n  \"nombre\": \"Lucía\",\n  \"apellido\": \"Fernández\",\n  \"cargo\": \"Vendedora\",\n  \"email\": \"luciadistribuidora@gmail.com\",\n  \"telefono\": \"2920777777\",\n  \"fecha_ingreso\": \"2023-03-01\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1186,7 +1186,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nombre\": \"Lucía\",\n  \"apellido\": \"Fernández\",\n  \"cargo\": \"Vendedora\",\n  \"email\": \"luciadedistrib@gmail.com\",\n  \"telefono\": \"2920-777777\",\n  \"fecha_ingreso\": \"2023-03-01\"\n}",
+              "raw": "{\n  \"nombre\": \"Lucía\",\n  \"apellido\": \"Fernández\",\n  \"cargo\": \"Vendedora\",\n  \"email\": \"luciadedistrib@gmail.com\",\n  \"telefono\": \"2920777777\",\n  \"fecha_ingreso\": \"2023-03-01\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1194,7 +1194,7 @@
               }
             },
             "url": {
-              "raw": "http://localhost:3000/api/empleados/1",
+              "raw": "http://localhost:3000/api/empleados/3",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -1203,7 +1203,7 @@
               "path": [
                 "api",
                 "empleados",
-                "1"
+                "3"
               ]
             }
           },
@@ -1265,7 +1265,7 @@
               }
             },
             "url": {
-              "raw": "http://localhost:3000/api/empleados/1",
+              "raw": "http://localhost:3000/api/empleados/3",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -1274,7 +1274,7 @@
               "path": [
                 "api",
                 "empleados",
-                "1"
+                "3"
               ]
             }
           },
@@ -1489,7 +1489,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nombre\": \"Molinos Andinos\",\n  \"contacto\": \"Laura Díaz\",\n  \"telefono\": \"2920-333333\",\n  \"email\": \"molinosandinos@gmail.com\",\n  \"direccion\": \"Calle 25 de Mayo 120\",\n  \"ciudad\": \"Bahía Blanca\"\n}",
+              "raw": "{\n  \"nombre\": \"Molinos Andinos\",\n  \"contacto\": \"Laura Díaz\",\n  \"telefono\": \"2920333333\",\n  \"email\": \"molinosandinos@gmail.com\",\n  \"direccion\": \"Calle 25 de Mayo 120\",\n  \"ciudad\": \"Bahía Blanca\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1563,7 +1563,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nombre\": \"Molinos Andinos\",\n  \"contacto\": \"Laura Díaz\",\n  \"telefono\": \"2920-333333\",\n  \"email\": \"deemolinosandinos@gmail.com\",\n  \"direccion\": \"Calle 25 de Mayo 120\",\n  \"ciudad\": \"Bahía Blanca\",\n  \"activo\": true\n}",
+              "raw": "{\n  \"nombre\": \"Molinos Andinos\",\n  \"contacto\": \"Laura Díaz\",\n  \"telefono\": \"2920333333\",\n  \"email\": \"deemolinosandinos@gmail.com\",\n  \"direccion\": \"Calle 25 de Mayo 120\",\n  \"ciudad\": \"Bahía Blanca\",\n  \"activo\": true\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1571,7 +1571,7 @@
               }
             },
             "url": {
-              "raw": "http://localhost:3000/api/proveedores/1",
+              "raw": "http://localhost:3000/api/proveedores/4",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -1580,7 +1580,7 @@
               "path": [
                 "api",
                 "proveedores",
-                "1"
+                "4"
               ]
             }
           },
@@ -1914,7 +1914,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://localhost:3000/api/productos/stock-bajo?limite=20",
+              "raw": "http://localhost:3000/api/productos/stock-bajo?limite=50",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -1928,7 +1928,7 @@
               "query": [
                 {
                   "key": "limite",
-                  "value": "20",
+                  "value": "50",
                   "description": "Cantidad máxima de productos a devolver"
                 }
               ]
@@ -2064,7 +2064,7 @@
               }
             },
             "url": {
-              "raw": "http://localhost:3000/api/productos/6",
+              "raw": "http://localhost:3000/api/productos/7",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -2073,7 +2073,7 @@
               "path": [
                 "api",
                 "productos",
-                "6"
+                "7"
               ]
             }
           },
@@ -2575,7 +2575,7 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "http://localhost:3000/api/pedidos/1",
+              "raw": "http://localhost:3000/api/pedidos/4",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -2584,7 +2584,7 @@
               "path": [
                 "api",
                 "pedidos",
-                "1"
+                "4"
               ]
             }
           },
@@ -2707,7 +2707,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://localhost:3000/api/pedidos/3/detalle/2",
+              "raw": "http://localhost:3000/api/pedidos/1/detalle/1",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -2716,9 +2716,9 @@
               "path": [
                 "api",
                 "pedidos",
-                "3",
+                "1",
                 "detalle",
-                "2"
+                "1"
               ]
             }
           },

@@ -43,13 +43,13 @@ model Producto {
   descripcion String          @db.VarChar(200)
   precio      Decimal         @db.Decimal(10, 2)
   stock       Int             @default(0)
-  categoriaId Int?            @map("categoria_id")
+  categoriaId Int            @map("categoria_id")
   proveedorId Int             @map("proveedor_id")
   activo      Boolean         @default(true)
   createdAt   DateTime        @default(now()) @map("created_at") @db.DateTime(3)
   updatedAt   DateTime        @default(now()) @updatedAt @map("updated_at") @db.DateTime(3)
   detalles    DetallePedido[]
-  categoria   Categoria?      @relation(fields: [categoriaId], references: [id])
+  categoria   Categoria      @relation(fields: [categoriaId], references: [id])
   proveedor   Proveedor       @relation(fields: [proveedorId], references: [id])
 
   @@index([categoriaId], map: "productos_categoria_id_fkey")
@@ -60,12 +60,12 @@ model Producto {
 model Cliente {
   id        Int      @id @default(autoincrement())
   nombre    String   @db.VarChar(100)
-  apellido  String?  @db.VarChar(100)
-  empresa   String?  @db.VarChar(100)
-  telefono  String?  @db.VarChar(30)
-  email     String?  @unique @db.VarChar(100)
-  direccion String?  @db.VarChar(150)
-  ciudad    String?  @db.VarChar(80)
+  apellido  String  @db.VarChar(100)
+  empresa   String  @db.VarChar(100)
+  telefono  String  @db.VarChar(30)
+  email     String  @unique @db.VarChar(100)
+  direccion String  @db.VarChar(150)
+  ciudad    String  @db.VarChar(80)
   createdAt DateTime @default(now()) @map("created_at") @db.DateTime(3)
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.DateTime(3)
   pedidos   Pedido[]
@@ -78,10 +78,10 @@ model Empleado {
   id           Int       @id @default(autoincrement())
   nombre       String    @db.VarChar(100)
   apellido     String    @db.VarChar(100)
-  cargo        String?   @db.VarChar(80)
-  email        String?   @db.VarChar(100)
-  telefono     String?   @db.VarChar(30)
-  fechaIngreso DateTime? @map("fecha_ingreso") @db.Date
+  cargo        String   @db.VarChar(80)
+  email        String   @db.VarChar(100)
+  telefono     String   @db.VarChar(30)
+  fechaIngreso DateTime @map("fecha_ingreso") @db.Date
   createdAt    DateTime  @default(now()) @map("created_at") @db.DateTime(3)
   updatedAt    DateTime  @default(now()) @updatedAt @map("updated_at") @db.DateTime(3)
   pedidos      Pedido[]

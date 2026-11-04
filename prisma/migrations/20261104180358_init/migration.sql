@@ -32,7 +32,7 @@ CREATE TABLE `productos` (
     `descripcion` VARCHAR(200) NOT NULL,
     `precio` DECIMAL(10, 2) NOT NULL,
     `stock` INTEGER NOT NULL DEFAULT 0,
-    `categoria_id` INTEGER NULL,
+    `categoria_id` INTEGER NOT NULL,
     `proveedor_id` INTEGER NOT NULL,
     `activo` BOOLEAN NOT NULL DEFAULT true,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
@@ -47,12 +47,12 @@ CREATE TABLE `productos` (
 CREATE TABLE `clientes` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `nombre` VARCHAR(100) NOT NULL,
-    `apellido` VARCHAR(100) NULL,
-    `empresa` VARCHAR(100) NULL,
-    `telefono` VARCHAR(30) NULL,
-    `email` VARCHAR(100) NULL,
-    `direccion` VARCHAR(150) NULL,
-    `ciudad` VARCHAR(80) NULL,
+    `apellido` VARCHAR(100) NOT NULL,
+    `empresa` VARCHAR(100) NOT NULL,
+    `telefono` VARCHAR(30) NOT NULL,
+    `email` VARCHAR(100) NOT NULL,
+    `direccion` VARCHAR(150) NOT NULL,
+    `ciudad` VARCHAR(80) NOT NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
@@ -65,10 +65,10 @@ CREATE TABLE `empleados` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `nombre` VARCHAR(100) NOT NULL,
     `apellido` VARCHAR(100) NOT NULL,
-    `cargo` VARCHAR(80) NULL,
-    `email` VARCHAR(100) NULL,
-    `telefono` VARCHAR(30) NULL,
-    `fecha_ingreso` DATE NULL,
+    `cargo` VARCHAR(80) NOT NULL,
+    `email` VARCHAR(100) NOT NULL,
+    `telefono` VARCHAR(30) NOT NULL,
+    `fecha_ingreso` DATE NOT NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
@@ -121,7 +121,7 @@ CREATE TABLE `detalle_pedido` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
-ALTER TABLE `productos` ADD CONSTRAINT `productos_categoria_id_fkey` FOREIGN KEY (`categoria_id`) REFERENCES `categorias`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `productos` ADD CONSTRAINT `productos_categoria_id_fkey` FOREIGN KEY (`categoria_id`) REFERENCES `categorias`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `productos` ADD CONSTRAINT `productos_proveedor_id_fkey` FOREIGN KEY (`proveedor_id`) REFERENCES `proveedores`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

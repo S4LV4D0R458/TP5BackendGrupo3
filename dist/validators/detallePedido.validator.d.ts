@@ -1,0 +1,4 @@
+export declare const validarCrearDetallePedido: (import("express").RequestHandler<import("express-serve-static-core").ParamsDictionary, any, any, import("qs").ParsedQs, Record<string, any>> | import("express-validator").ValidationChain)[];
+export declare const validarActualizarDetallePedido: (import("express").RequestHandler<import("express-serve-static-core").ParamsDictionary, any, any, import("qs").ParsedQs, Record<string, any>> | import("express-validator").ValidationChain)[];
+export declare const obtenerProductoIDValidator: (import("express").RequestHandler<import("express-serve-static-core").ParamsDictionary, any, any, import("qs").ParsedQs, Record<string, any>> | import("express-validator").ValidationChain)[];
+//# sourceMappingURL=detallePedido.validator.d.ts.map
