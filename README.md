@@ -3,6 +3,8 @@ Para comentarle, integré los datos hechos a la DB con el siguiente comando:
 
     npx prisma db execute --config .\prisma7.config.ts --file .\database.sql
 
+La API se conecta usando `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD` y `DB_NAME`. Estas variables deben apuntar a la misma base configurada en `DATABASE_URL`, que utiliza Prisma CLI.
+
 ## Diferencia entre `$queryRaw` y `$executeRaw`
 `$queryRaw` sirve para consultas que devuelven filas como un SELECT, pero devuelve un arreglo con los datos. EJ:
 
